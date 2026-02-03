@@ -1,0 +1,343 @@
+/* ========================================
+   RESET ET CONFIGURATION DE BASE
+   ======================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+    background-image: url("../assets/4476.jpg");
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow-x: hidden;
+}
+
+/* ========================================
+   PARTICULES ANIMÉES EN ARRIÈRE-PLAN
+   ======================================== */
+
+body::before {
+    content: '';
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 40% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+    animation: floatBackground 20s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes floatBackground {
+    0%, 100% { 
+        transform: translate(0, 0) scale(1); 
+    }
+    33% { 
+        transform: translate(30px, -30px) scale(1.1); 
+    }
+    66% { 
+        transform: translate(-20px, 20px) scale(0.9); 
+    }
+}
+
+/* ========================================
+   STYLES DE LA CALCULATRICE
+   ======================================== */
+
+/* Ombre et effets 3D de la calculatrice */
+.calculator-shadow {
+    box-shadow: 
+        0 30px 60px rgba(0, 0, 0, 0.4),
+        0 10px 20px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+/* Effet au survol de la calculatrice */
+.calculator-shadow:hover {
+    transform: translateY(-5px);
+    box-shadow: 
+        0 40px 80px rgba(0, 0, 0, 0.5),
+        0 15px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* Fond dégradé de la calculatrice */
+.calculator-bg {
+    background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+    backdrop-filter: blur(10px);
+}
+
+/* ========================================
+   ANIMATIONS DES BOUTONS
+   ======================================== */
+
+/* Effet de survol avec ondulation */
+.button-hover {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Effet d'ondulation au clic */
+.button-hover::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.button-hover:active::before {
+    width: 300px;
+    height: 300px;
+}
+
+/* Élévation au survol */
+.button-hover:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* Effet au clic */
+.button-active:active {
+    transform: translateY(-1px) scale(0.98);
+}
+
+/* ========================================
+   ÉCRAN DE LA CALCULATRICE
+   ======================================== */
+
+.calc-screen {
+    background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
+    box-shadow: 
+        inset 0 2px 10px rgba(0, 0, 0, 0.5),
+        0 2px 20px rgba(99, 102, 241, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Effet de brillance qui se déplace sur l'écran */
+.calc-screen::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* ========================================
+   ANIMATIONS D'APPARITION
+   ======================================== */
+
+/* Animation de fondu pour l'apparition initiale */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Animation de glissement pour le menu */
+@keyframes slideIn {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.slide-in {
+    animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ========================================
+   MENU LATÉRAL
+   ======================================== */
+
+/* Overlay sombre derrière le menu */
+.menu-overlay {
+    transition: opacity 0.3s ease-out;
+    backdrop-filter: blur(5px);
+}
+
+/* Animation du bouton hamburger */
+.hamburger-line {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center;
+}
+
+/* État ouvert du hamburger (transformation en X) */
+.hamburger-open .line1 {
+    transform: rotate(-45deg) translate(-5px, 6px);
+}
+
+.hamburger-open .line2 {
+    opacity: 0;
+    transform: scale(0);
+}
+
+.hamburger-open .line3 {
+    transform: rotate(45deg) translate(-5px, -6px);
+}
+
+/* ========================================
+   EFFETS SPÉCIAUX
+   ======================================== */
+
+/* Effet de pulsation pour les boutons d'opération */
+@keyframes pulse {
+    0%, 100% { 
+        box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.7); 
+    }
+    50% { 
+        box-shadow: 0 0 0 10px rgba(249, 115, 22, 0); 
+    }
+}
+
+.operation-btn:hover {
+    animation: pulse 1.5s infinite;
+}
+
+/* Effet de brillance sur les nombres affichés */
+.number-display {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    transition: all 0.3s ease;
+}
+
+/* ========================================
+   GRILLE SCIENTIFIQUE
+   ======================================== */
+
+.scientific-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.5rem;
+}
+
+.scientific-grid button {
+    min-height: 3rem;
+    font-size: 0.875rem;
+}
+
+/* ========================================
+   ANIMATIONS DU MODAL
+   ======================================== */
+
+/* Animation de rotation pour le bouton de couleur */
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.color-btn-icon:hover {
+    animation: rotate 0.6s ease-in-out;
+}
+
+/* Animation du modal qui apparaît */
+.modal-content {
+    animation: modalSlideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes modalSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Effet au survol des aperçus de couleur */
+.color-preview:hover {
+    box-shadow: 0 0 20px currentColor;
+    transform: scale(1.1) rotate(5deg);
+}
+
+/* ========================================
+   SCROLLBAR PERSONNALISÉE
+   ======================================== */
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1f2937;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #4b5563;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #6b7280;
+}
+
+/* ========================================
+   ANIMATION DE L'HISTORIQUE
+   ======================================== */
+
+@keyframes fadeInScale {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.history-item {
+    animation: fadeInScale 0.3s ease-out;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+/* Ajustements pour les petits écrans */
+@media (max-width: 640px) {
+    .scientific-grid {
+        gap: 0.375rem;
+    }
+    
+    .scientific-grid button {
+        min-height: 2.5rem;
+        font-size: 0.75rem;
+    }
+}

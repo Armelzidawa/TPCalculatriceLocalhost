@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculatrice</title>
+    
+    <!-- Tailwind CSS pour le style responsive -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Nos fichiers CSS et JS -->
+    <link rel="stylesheet" href="./styles/styles.css">
+    
+</head>
+<body class="flex items-center justify-center p-4">
+    
+    <!-- ========================================
+         MENU LATÉRAL
+         ======================================== -->
+    
+    <!-- Overlay sombre qui apparaît quand le menu est ouvert -->
+    <div id="menu-overlay" class="menu-overlay fixed inset-0 bg-black bg-opacity-50 z-40 hidden" onclick="toggleMenu()"></div>
+    
+    <!-- Menu latéral gauche -->
+    <div id="side-menu" class="fixed top-0 left-0 h-full w-80 bg-gray-900 z-50 transform -translate-x-full transition-transform duration-300 overflow-y-auto">
+        <div class="p-6">
+            <!-- En-tête du menu -->
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-white text-2xl font-bold">Fonctions</h2>
+                <button onclick="toggleMenu()" class="text-white hover:text-gray-300">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Section: Modes de calculatrice -->
+            <div class="mb-6">
+                <h3 class="text-gray-400 text-sm font-semibold mb-3">MODE</h3>
+                <button onclick="switchMode('basic')" id="btn-basic" class="w-full bg-orange-500 text-white py-3 px-4 rounded-lg mb-2 hover:bg-orange-600 transition">
+                    📱 Standard
+                </button>
+                <button onclick="switchMode('scientific')" id="btn-scientific" class="w-full bg-gray-700 text-white py-3 px-4 rounded-lg hover:bg-gray-600 transition">
+                    🔬 Scientifique
+                </button>
+            </div>
+            
+            <!-- Section: Historique des calculs -->
+            <div class="mb-6">
+                <h3 class="text-gray-400 text-sm font-semibold mb-3">HISTORIQUE</h3>
+                <div id="history-list" class="bg-gray-800 rounded-lg p-3 max-h-64 overflow-y-auto">
+                    <p class="text-gray-500 text-sm text-center">Aucun calcul récent</p>
+                </div>
+                <button onclick="clearHistory()" class="w-full bg-red-500 text-white py-2 px-4 rounded-lg mt-2 hover:bg-red-600 transition text-sm">
+                    Effacer l'historique
+                </button>
+            </div>
+            
+            <!-- Section: Paramètres -->
+            <div class="mb-6">
+                <h3 class="text-gray-400 text-sm font-semibold mb-3">PARAMÈTRES</h3>
+                <div class="bg-gray-800 rounded-lg p-4">
+                    <!-- Toggle pour activer/désactiver le son -->
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-white text-sm">Son</span>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="sound-toggle" class="sr-only peer" checked>
+                            <div class="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+                        </label>
+                    </div>
+                    <!-- Sélecteur pour changer le mode d'angle (Degrés/Radians) -->
+                    <div class="flex justify-between items-center">
+                        <span class="text-white text-sm">Angle</span>
+                        <select id="angle-mode" class="bg-gray-700 text-white text-sm rounded px-3 py-1">
+                            <option value="deg">Degrés</option>
+                            <option value="rad">Radians</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ========================================
+         CALCULATRICE PRINCIPALE
+         ======================================== -->
+    
+    <div id="calculator-container" class="calculator-shadow calculator-bg bg-gray-900 rounded-3xl p-6 w-full max-w-md fade-in">
+        
+        <!-- En-tête avec menu hamburger et bouton de couleur -->
+        <div class="flex justify-between items-center mb-4">
+            <!-- Bouton menu hamburger (3 lignes) -->
+            <button onclick="toggleMenu()" id="hamburger" class="text-white p-2 hover:bg-gray-800 rounded-lg transition-all duration-300">
+                <div class="w-6 h-5 flex flex-col justify-between">
+                    <span class="hamburger-line line1 w-full h-0.5 bg-white rounded"></span>
+                    <span class="hamburger-line line2 w-full h-0.5 bg-white rounded"></span>
+                    <span class="hamburger-line line3 w-full h-0.5 bg-white rounded"></span>
+                </div>
+            </button>
+            
+            <!-- Titre de la calculatrice -->
+            <h1 class="text-white text-lg font-semibold tracking-wide" id="calc-title">Calculatrice Standard</h1>
+            
+            <!-- Bouton pour changer la couleur du thème -->
+            <button onclick="openColorPicker()" class="color-btn-icon text-white p-2 hover:bg-gray-800 rounded-lg transition-all duration-300" title="Changer la couleur">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M4 2a2 2 0 00-2 2v11a3 3 0 106 0V4a2 2 0 00-2-2H4zm1 14a1 1 0 100-2 1 1 0 000 2zm5-1.757l4.9-4.9a2 2 0 000-2.828L13.485 5.1a2 2 0 00-2.828 0L10 5.757v8.486zM16 18H9.071l6-6H16a2 2 0 012 2v2a2 2 0 01-2 2z" clip-rule="evenodd"/>
+                </svg>
+            </button>
+        </div>
+        
+        <!-- ========================================
+             MODAL DE SÉLECTION DE COULEUR
+             ======================================== -->
+        
+        <div id="color-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4">
+            <div class="modal-content bg-gray-900 rounded-2xl p-6 max-w-sm w-full shadow-2xl">
+                <!-- En-tête du modal -->
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-white text-xl font-bold">🎨 Thème</h2>
+                    <button onclick="closeColorPicker()" class="text-white hover:text-gray-300 transition-colors duration-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- Grille de couleurs prédéfinies -->
+                <div class="grid grid-cols-3 gap-3 mb-4">
+                    <button onclick="changeThemeColor('purple')" class="color-preview h-16 rounded-lg transition-all duration-300 hover:scale-110" style="background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);">
+                        <span class="text-white font-semibold text-sm drop-shadow-lg">Violet</span>
+                    </button>
+                    <button onclick="changeThemeColor('blue')" class="color-preview h-16 rounded-lg transition-all duration-300 hover:scale-110" style="background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);">
+                        <span class="text-white font-semibold text-sm drop-shadow-lg">Bleu</span>
+                    </button>
+                    <button onclick="changeThemeColor('green')" class="color-preview h-16 rounded-lg transition-all duration-300 hover:scale-110" style="background: linear-gradient(135deg, #10b981 0%, #065f46 100%);">
+                        <span class="text-white font-semibold text-sm drop-shadow-lg">Vert</span>
+                    </button>
+                    <button onclick="changeThemeColor('red')" class="color-preview h-16 rounded-lg transition-all duration-300 hover:scale-110" style="background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%);">
+                        <span class="text-white font-semibold text-sm drop-shadow-lg">Rouge</span>
+                    </button>
+                    <button onclick="changeThemeColor('orange')" class="color-preview h-16 rounded-lg transition-all duration-300 hover:scale-110" style="background: linear-gradient(135deg, #f97316 0%, #c2410c 100%);">
+                        <span class="text-white font-semibold text-sm drop-shadow-lg">Orange</span>
+                    </button>
+                    <button onclick="changeThemeColor('dark')" class="color-preview h-16 rounded-lg transition-all duration-300 hover:scale-110" style="background: linear-gradient(135deg, #1f2937 0%, #111827 100%);">
+                        <span class="text-white font-semibold text-sm drop-shadow-lg">Noir</span>
+                    </button>
+                    <button onclick="changeThemeColor('pink')" class="color-preview h-16 rounded-lg transition-all duration-300 hover:scale-110" style="background: linear-gradient(135deg, #ec4899 0%, #9f1239 100%);">
+                        <span class="text-white font-semibold text-sm drop-shadow-lg">Rose</span>
+                    </button>
+                    <button onclick="changeThemeColor('cyan')" class="color-preview h-16 rounded-lg transition-all duration-300 hover:scale-110" style="background: linear-gradient(135deg, #06b6d4 0%, #0e7490 100%);">
+                        <span class="text-white font-semibold text-sm drop-shadow-lg">Cyan</span>
+                    </button>
+                    <button onclick="changeThemeColor('sunset')" class="color-preview h-16 rounded-lg transition-all duration-300 hover:scale-110" style="background: linear-gradient(135deg, #f59e0b 0%, #dc2626 50%, #7c3aed 100%);">
+                        <span class="text-white font-semibold text-sm drop-shadow-lg">Sunset</span>
+                    </button>
+                </div>
+                
+                <!-- Sélecteur de couleur personnalisée -->
+                <div class="mb-4">
+                    <label class="text-white text-sm mb-2 block font-semibold">💡 Couleur personnalisée</label>
+                    <div class="flex gap-2">
+                        <input type="color" id="custom-color" class="w-full h-12 rounded-lg cursor-pointer border-2 border-gray-700" value="#667eea">
+                        <button onclick="applyCustomColor()" class="bg-green-500 hover:bg-green-600 text-white px-6 rounded-lg transition-all duration-300 hover:scale-105 font-semibold">
+                            OK
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ========================================
+             ÉCRAN D'AFFICHAGE
+             ======================================== -->
+        
+        <div class="calc-screen rounded-2xl p-6 mb-6 relative">
+            <!-- Opération précédente (affichée en petit en haut) -->
+            <div id="previous-operand" class="text-gray-400 text-right text-base h-6 overflow-hidden transition-all duration-300"></div>
+            <!-- Nombre actuel (affiché en grand) -->
+            <div id="current-operand" class="number-display text-white text-right text-4xl font-bold mt-2 h-12 overflow-hidden">0</div>
+        </div>
+        
+        <!-- ========================================
+             CALCULATRICE STANDARD
+             ======================================== -->
+        
+        <div id="basic-calculator">
+            <div class="grid grid-cols-4 gap-3">
+                <!-- Ligne 1: AC, DEL, ÷ -->
+                <button onclick="calculator.clear()" class="button-hover button-active col-span-2 bg-red-500 hover:bg-red-600 text-white font-bold py-4 rounded-xl transition-all duration-300">
+                    AC
+                </button>
+                <button onclick="calculator.delete()" class="button-hover button-active bg-gray-700 hover:bg-gray-600 text-white font-bold py-4 rounded-xl transition-all duration-300">
+                    DEL
+                </button>
+                <button onclick="calculator.chooseOperation('÷')" class="button-hover button-active operation-btn bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-xl transition-all duration-300 text-2xl">
+                    ÷
+                </button>
+                
+                <!-- Ligne 2: 7, 8, 9, × -->
+                <button onclick="calculator.appendNumber('7')" class="button-hover button-active bg-gray-700 hover:bg-gray-600 text-white font-bold py-4 rounded-xl transition-all duration-300 text-xl">
+                    7
+                </button>
+                <button onclick="calculator.appendNumber('8')" class="button-hover button-active bg-gray-700 hover:bg-gray-600 text-white font-bold py-4 rounded-xl transition-all duration-300 text-xl">
+                    8
+                </button>
+                <button onclick="calculator.appendNumber('9')" class="button-hover button-active bg-gray-700 hover:bg-gray-600 text-white font-bold py-4 rounded-xl transition-all duration-300 text-xl">
+                    9
+                </button>
+                <button onclick="calculator.chooseOperation('×')" class="button-hover button-active operation-btn bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-xl transition-all duration-300 text-2xl">
+                    ×
+                </button>
+                
+                <!-- Ligne 3: 4, 5, 6, - -->
+                <button onclick="calculator.appendNumber('4')" class="button-hover button-active bg-gray-700 hover:bg-gray-600 text-white font-bold py-4 rounded-xl transition-all duration-300 text-xl">
+                    4
+                </button>
+                <button onclick="calculator.appendNumber('5')" class="button-hover button-active bg-gray-700 hover:bg-gray-600 text-white font-bold py-4 rounded-xl transition-all duration-300 text-xl">
+                    5
+                </button>
+                <button onclick="calculator.appendNumber('6')" class="button-hover button-active bg-gray-700 hover:bg-gray-600 text-white font-bold py-4 rounded-xl transition-all duration-300 text-xl">
+                    6
+                </button>
+                <button onclick="calculator.chooseOperation('-')" class="button-hover button-active operation-btn bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-xl transition-all duration-300 text-2xl">
+                    −
+                </button>
+                
+                <!-- Ligne 4: 1, 2, 3, + -->
+                <button onclick="calculator.appendNumber('1')" class="button-hover button-active bg-gray-700 hover:bg-gray-600 text-white font-bold py-4 rounded-xl transition-all duration-300 text-xl">
+                    1
+                </button>
+                <button onclick="calculator.appendNumber('2')" class="button-hover button-active bg-gray-700 hover:bg-gray-600 text-white font-bold py-4 rounded-xl transition-all duration-300 text-xl">
+                    2
+                </button>
+                <button onclick="calculator.appendNumber('3')" class="button-hover button-active bg-gray-700 hover:bg-gray-600 text-white font-bold py-4 rounded-xl transition-all duration-300 text-xl">
+                    3
+                </button>
+                <button onclick="calculator.chooseOperation('+')" class="button-hover button-active operation-btn bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-xl transition-all duration-300 text-2xl">
+                    +
+                </button>
+                
+                <!-- Ligne 5: 0, ., = -->
+                <button onclick="calculator.appendNumber('0')" class="button-hover button-active col-span-2 bg-gray-700 hover:bg-gray-600 text-white font-bold py-4 rounded-xl transition-all duration-300 text-xl">
+                    0
+                </button>
+                <button onclick="calculator.appendNumber('.')" class="button-hover button-active bg-gray-700 hover:bg-gray-600 text-white font-bold py-4 rounded-xl transition-all duration-300 text-xl">
+                    .
+                </button>
+                <button onclick="calculator.compute()" class="button-hover button-active bg-green-500 hover:bg-green-600 text-white font-bold py-4 rounded-xl transition-all duration-300 text-2xl">
+                    =
+                </button>
+            </div>
+        </div>
+        
+        <!-- ========================================
+             CALCULATRICE SCIENTIFIQUE
+             ======================================== -->
+        
+       <div id="scientific-calculator" class="hidden">
+            <div class="scientific-grid grid grid-cols-5 gap-2.5">
+
+                <!-- LIGNE 1 : Trigonométrie directe + DEL / AC -->
+                <button onclick="calculator.scientificFunction('sin')"
+                        class="button-hover button-active bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-all duration-300">
+                sin
+                </button>
+                <button onclick="calculator.scientificFunction('cos')"
+                        class="button-hover button-active bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-all duration-300">
+                cos
+                </button>
+                <button onclick="calculator.scientificFunction('tan')"
+                        class="button-hover button-active bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-all duration-300">
+                tan
+                </button>
+                <button onclick="calculator.delete()"
+                        class="button-hover button-active bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 rounded-lg transition-all duration-300">
+                DEL
+                </button>
+                <button onclick="calculator.clear()"
+                        class="button-hover button-active bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-lg transition-all duration-300">
+                AC
+                </button>
+
+                <!-- LIGNE 2 : Trigonométrie inverse -->
+                <button onclick="calculator.scientificFunction('asin')"
+                        class="button-hover button-active bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 rounded-lg transition-all duration-300 text-sm">
+                asin
+                </button>
+                <button onclick="calculator.scientificFunction('acos')"
+                        class="button-hover button-active bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 rounded-lg transition-all duration-300 text-sm">
+                acos
+                </button>
+                <button onclick="calculator.scientificFunction('atan')"
+                        class="button-hover button-active bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 rounded-lg transition-all duration-300 text-sm">
+                atan
+                </button>
+                <button onclick="calculator.scientificFunction('exp')"
+                        class="button-hover button-active bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-all duration-300">
+                eˣ
+                </button>
+                <button onclick="calculator.scientificFunction('ln')"
+                        class="button-hover button-active bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-all duration-300">
+                ln
+                </button>
+
+                <!-- LIGNE 3 : Log, puissances & racines -->
+                <button onclick="calculator.scientificFunction('log')"
+                        class="button-hover button-active bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-all duration-300">
+                log
+                </button>
+                <button onclick="calculator.scientificFunction('square')"
+                        class="button-hover button-active bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg transition-all duration-300">
+                x²
+                </button>
+                <button onclick="calculator.scientificFunction('cube')"
+                        class="button-hover button-active bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg transition-all duration-300">
+                x³
+                </button>
+                <button onclick="calculator.chooseOperation('^')"
+                        class="button-hover button-active bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg transition-all duration-300">
+                xʸ
+                </button>
+                <button onclick="calculator.scientificFunction('sqrt')"
+                        class="button-hover button-active bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-all duration-300">
+                √
+                </button>
+
+                <!-- LIGNE 4 : Fonctions avancées -->
+                <button onclick="calculator.scientificFunction('cbrt')"
+                        class="button-hover button-active bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg transition-all duration-300">
+                ∛
+                </button>
+                <button onclick="calculator.scientificFunction('factorial')"
+                        class="button-hover button-active bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg transition-all duration-300">
+                n!
+                </button>
+                <button onclick="calculator.scientificFunction('abs')"
+                        class="button-hover button-active bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg transition-all duration-300">
+                |x|
+                </button>
+                <button onclick="calculator.scientificFunction('percent')"
+                        class="button-hover button-active bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg transition-all duration-300">
+                %
+                </button>
+                <button onclick="calculator.scientificFunction('negate')"
+                        class="button-hover button-active bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg transition-all duration-300">
+                +/-
+                </button>
+
+                <!-- LIGNE 5 : Chiffres 7 8 9 + π + division -->
+                <button onclick="calculator.appendNumber('7')"
+                        class="button-hover button-active bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 rounded-lg transition-all duration-300 text-xl">
+                7
+                </button>
+                <button onclick="calculator.appendNumber('8')"
+                        class="button-hover button-active bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 rounded-lg transition-all duration-300 text-xl">
+                8
+                </button>
+                <button onclick="calculator.appendNumber('9')"
+                        class="button-hover button-active bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 rounded-lg transition-all duration-300 text-xl">
+                9
+                </button>
+                <button onclick="calculator.insertConstant('pi')"
+                        class="button-hover button-active bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-all duration-300">
+                π
+                </button>
+                <button onclick="calculator.chooseOperation('÷')"
+                        class="button-hover button-active bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-lg transition-all duration-300 text-2xl">
+                ÷
+                </button>
+
+                <!-- LIGNE 6 : Chiffres 4 5 6 + C(n,k) + × -->
+                <button onclick="calculator.appendNumber('4')"
+                        class="button-hover button-active bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 rounded-lg transition-all duration-300 text-xl">
+                4
+                </button>
+                <button onclick="calculator.appendNumber('5')"
+                        class="button-hover button-active bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 rounded-lg transition-all duration-300 text-xl">
+                5
+                </button>
+                <button onclick="calculator.appendNumber('6')"
+                        class="button-hover button-active bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 rounded-lg transition-all duration-300 text-xl">
+                6
+                </button>
+                <button onclick="calculator.scientificFunction('combinaison')"
+                        class="button-hover button-active bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 rounded-lg transition-all duration-300 text-sm">
+                C(n,k)
+                </button>
+                <button onclick="calculator.chooseOperation('×')"
+                        class="button-hover button-active bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-lg transition-all duration-300 text-2xl">
+                ×
+                </button>
+
+                <!-- LIGNE 7 : Chiffres 1 2 3 + A(n,k) + - -->
+                <button onclick="calculator.appendNumber('1')"
+                        class="button-hover button-active bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 rounded-lg transition-all duration-300 text-xl">
+                1
+                </button>
+                <button onclick="calculator.appendNumber('2')"
+                        class="button-hover button-active bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 rounded-lg transition-all duration-300 text-xl">
+                2
+                </button>
+                <button onclick="calculator.appendNumber('3')"
+                        class="button-hover button-active bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 rounded-lg transition-all duration-300 text-xl">
+                3
+                </button>
+                <button onclick="calculator.scientificFunction('arrangement')"
+                        class="button-hover button-active bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 rounded-lg transition-all duration-300 text-sm">
+                A(n,k)
+                </button>
+                <button onclick="calculator.chooseOperation('-')"
+                        class="button-hover button-active bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-lg transition-all duration-300 text-2xl">
+                −
+                </button>
+
+                <!-- LIGNE 8 : 0 . = (grand bouton =) -->
+                <button onclick="calculator.appendNumber('0')"
+                        class="button-hover button-active bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 rounded-lg transition-all duration-300 text-xl col-span-2">
+                0
+                </button>
+                <button onclick="calculator.appendNumber('.')"
+                        class="button-hover button-active bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 rounded-lg transition-all duration-300 text-xl">
+                .
+                </button>
+                <button onclick="calculator.compute()"
+                        class="button-hover button-active bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg transition-all duration-300 text-2xl col-span-2">
+                =
+                </button>
+
+            </div>
+            </div>
+        
+        <!-- Signature -->
+        <div class="text-center text-gray-500 text-sm mt-6">
+            Armel et logos © 2026
+        </div>
+    </div>
+
+    <!-- Charger le fichier JavaScript -->
+    <script src="./scripts/script.js"></script>
+</body>
+</html>s
