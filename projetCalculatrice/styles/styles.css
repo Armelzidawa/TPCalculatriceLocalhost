@@ -50,14 +50,14 @@ body {
    ======================================== */
 
 /* Effet de survol avec ondulation */
-.button-hover {
+/* .button-hover {
     position: relative;
     overflow: hidden;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
+} */
 
 /* Effet d'ondulation au clic */
-.button-hover::before {
+/* .button-hover::before {
     content: '';
     position: absolute;
     top: 50%;
@@ -73,7 +73,7 @@ body {
 .button-hover:active::before {
     width: 300px;
     height: 300px;
-}
+} */
 
 /* Élévation au survol */
 .button-hover:hover {
@@ -314,5 +314,6 @@ body {
     }
 
 }
+
 
 
