@@ -40,10 +40,10 @@ body {
 }
 
 /* Fond dégradé de la calculatrice */
-.calculator-bg {
+/* .calculator-bg {
     background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
     backdrop-filter: blur(10px);
-}
+} */
 
 /* ========================================
    ANIMATIONS DES BOUTONS
@@ -314,4 +314,5 @@ body {
     }
 
 }
+
 
