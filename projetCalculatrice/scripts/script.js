@@ -24,8 +24,8 @@ const themes = {
     orange: 'linear-gradient(135deg, #f97316 0%, #c2410c 100%)',
     dark: 'linear-gradient(135deg, #1f2937 0%, #111827 100%)',
     pink: 'linear-gradient(135deg, #ec4899 0%, #9f1239 100%)',
-    cyan: 'linear-gradient(135deg, #06b6d4 0%, #0e7490 100%)',
-    sunset: 'linear-gradient(135deg, #f59e0b 0%, #dc2626 50%, #7c3aed 100%)'
+    yellow: 'linear-gradient(135deg, #facc15 0%, #a16207 100%)',
+    white: 'linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%)'
 };
 
 // ========================================
@@ -770,4 +770,5 @@ window.addEventListener('load', () => {
         const calculator = document.getElementById('calculator-container');
         calculator.style.background = savedTheme;
     }
+
 });
