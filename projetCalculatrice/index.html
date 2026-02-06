@@ -185,7 +185,7 @@
                 <button onclick="calculator.clear()" class="button-hover button-active col-span-2 bg-red-500 hover:bg-red-600 text-white font-bold py-4 rounded-xl transition-all duration-300">
                     AC
                 </button>
-                <button onclick="calculator.delete()" class="button-hover button-active bg-gray-700 hover:bg-gray-600 text-white font-bold py-4 rounded-xl transition-all duration-300">
+                <button onclick="calculator.delete()" class="button-hover button-active bg-red-700 hover:bg-red-600 text-white font-bold py-4 rounded-xl transition-all duration-300">
                     DEL
                 </button>
                 <button onclick="calculator.chooseOperation('÷')" class="button-hover button-active operation-btn bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-xl transition-all duration-300 text-2xl">
@@ -289,9 +289,10 @@
                         class="button-hover button-active bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 rounded-lg transition-all duration-300 text-sm">
                 atan
                 </button>
-                <button onclick="calculator.scientificFunction('exp')"
+
+               <button onclick="calculator.scientificFunction('log')"
                         class="button-hover button-active bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg transition-all duration-300">
-                eˣ
+                log
                 </button>
                 <button onclick="calculator.scientificFunction('ln')"
                         class="button-hover button-active bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg transition-all duration-300">
@@ -299,9 +300,10 @@
                 </button>
 
                 <!-- LIGNE 3 : Log, puissances & racines -->
-                <button onclick="calculator.scientificFunction('log')"
-                        class="button-hover button-active bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg transition-all duration-300">
-                log
+               
+                <button onclick="calculator.scientificFunction('exp')"
+                        class="button-hover button-active bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg transition-all duration-300">
+                eˣ
                 </button>
                 <button onclick="calculator.scientificFunction('square')"
                         class="button-hover button-active bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg transition-all duration-300">
@@ -316,7 +318,7 @@
                 xʸ
                 </button>
                 <button onclick="calculator.scientificFunction('sqrt')"
-                        class="button-hover button-active bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-all duration-300">
+                        class="button-hover button-active bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg transition-all duration-300">
                 √
                 </button>
 
@@ -356,7 +358,7 @@
                 9
                 </button>
                 <button onclick="calculator.insertConstant('pi')"
-                        class="button-hover button-active bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-all duration-300">
+                        class="button-hover button-active bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg transition-all duration-300">
                 π
                 </button>
                 <button onclick="calculator.chooseOperation('÷')"
@@ -436,6 +438,7 @@
 </body>
 
 </html>
+
 
 
 
