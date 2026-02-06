@@ -82,23 +82,23 @@ function applyCustomColor() {
     if (soundEnabled) playSound();
 }
 
-/**
- * Assombrit ou éclaircit une couleur hexadécimale
- * @param {string} color - Couleur hexadécimale (#RRGGBB)
- * @param {number} percent - Pourcentage d'ajustement (négatif pour assombrir)
- * @returns {string} Couleur ajustée en hexadécimal
- */
-function adjustColor(color, percent) {
-    const num = parseInt(color.replace("#",""), 16);
-    const amt = Math.round(2.55 * percent);
-    const R = (num >> 16) + amt;
-    const G = (num >> 8 & 0x00FF) + amt;
-    const B = (num & 0x0000FF) + amt;
+// /**
+//  * Assombrit ou éclaircit une couleur hexadécimale
+//  * @param {string} color - Couleur hexadécimale (#RRGGBB)
+//  * @param {number} percent - Pourcentage d'ajustement (négatif pour assombrir)
+//  * @returns {string} Couleur ajustée en hexadécimal
+//  */
+// function adjustColor(color, percent) {
+//     const num = parseInt(color.replace("#",""), 16);
+//     const amt = Math.round(2.55 * percent);
+//     const R = (num >> 16) + amt;
+//     const G = (num >> 8 & 0x00FF) + amt;
+//     const B = (num & 0x0000FF) + amt;
     
-    return "#" + (0x1000000 + (R<255?R<1?0:R:255)*0x10000 +
-        (G<255?G<1?0:G:255)*0x100 + (B<255?B<1?0:B:255))
-        .toString(16).slice(1);
-}
+//     return "#" + (0x1000000 + (R<255?R<1?0:R:255)*0x10000 +
+//         (G<255?G<1?0:G:255)*0x100 + (B<255?B<1?0:B:255))
+//         .toString(16).slice(1);
+// }
 
 // ========================================
 // GESTION DU MENU LATÉRAL
@@ -278,7 +278,7 @@ function cube(n) {
 // Factorielle (déjà présente, mais on la rend plus visible)
 function factorielle(n) {
     if (n < 0 || !Number.isInteger(n)) {
-        alert("Factorielle : seulement entiers positifs ou zéro");
+        alert("Veuiller inserer un entiers positifs ou zéro");
         return null;
     }
     if (n === 0 || n === 1) return 1;
@@ -293,7 +293,7 @@ function factorielle(n) {
 // Arrangement A(n,k) = n! / (n-k)!
 function arrangement(n, k) {
     if (k < 0 || k > n || !Number.isInteger(n) || !Number.isInteger(k)) {
-        alert("Arrangement : n et k doivent être entiers, k ≥ 0 et k ≤ n");
+        alert("Veuilllez inserer les entiers, k ≥ 0 et k ≤ n");
         return null;
     }
     return factorielle(n) / factorielle(n - k);
@@ -302,7 +302,7 @@ function arrangement(n, k) {
 // Combinaison C(n,k) = n! / (k! × (n-k)!)
 function combinaison(n, k) {
     if (k < 0 || k > n || !Number.isInteger(n) || !Number.isInteger(k)) {
-        alert("Combinaison : n et k doivent être entiers, k ≥ 0 et k ≤ n");
+        alert("Veuiller inserer les entiers, k ≥ 0 et k ≤ n");
         return null;
     }
     return factorielle(n) / (factorielle(k) * factorielle(n - k));
@@ -415,7 +415,7 @@ class Calculator {
                 break;
             case '÷':
                 if (current === 0) {
-                    alert('Division par zéro impossible !');
+                    alert('La Division par zéro est impossible !');
                     this.clear();
                     return;
                 }
@@ -478,7 +478,7 @@ class Calculator {
                 break;
             case 'ln':
                 if (current <= 0) {
-                    alert('Veuillez insérer un nombre positif pour le logarithme ');
+                    alert('Veuillez insérer un nombre positif pour ln ! ');
                     return;
                 }
                 result = Math.log(current);
@@ -506,7 +506,7 @@ class Calculator {
                 break;
             case 'factorial':
                 if (current < 0 || !Number.isInteger(current)) {
-                    alert('Factorielle disponible uniquement pour les entiers positifs');
+                    alert('Factorielle est uniquement pour les entiers positifs');
                     return;
                 }
                 result = this.factorial(current);
@@ -521,8 +521,8 @@ class Calculator {
                 calculationString = `${current}%`;
                 break;
             case 'abs':
-            result = valeurAbsolue(current);
-            calculationString = `|${current}|`;
+                result = valeurAbsolue(current);
+                calculationString = `|${current}|`;
             break;
 
             case 'cbrt':
@@ -570,7 +570,7 @@ class Calculator {
                 break;
 
             case 'combinaison':
-                let k = prompt("Entrez la valeur de k pour C(n,k) :");
+                let k = prompt("Veuillez entrer la valeur de k pour C(n,k) :");
                 k = parseInt(k);
                 if (isNaN(k)) return;
                 result = combinaison(current, k);
@@ -579,7 +579,7 @@ class Calculator {
                 break;
 
             case 'arrangement':
-                let k2 = prompt("Entrez la valeur de k pour A(n,k) :");
+                let k2 = prompt("Veuiller entrer la valeur de k pour A(n,k) :");
                 k2 = parseInt(k2);
                 if (isNaN(k2)) return;
                 result = arrangement(current, k2);
@@ -616,10 +616,7 @@ class Calculator {
         return result;
     }
     
-    /**
-     * Insère une constante mathématique (comme π)
-     * @param {string} constant - Le nom de la constante
-     */
+   
     insertConstant(constant) {
         switch(constant) {
             case 'pi':
@@ -630,21 +627,14 @@ class Calculator {
         if (soundEnabled) playSound();
     }
     
-    /**
-     * Charge une valeur depuis l'historique
-     * @param {string} value - La valeur à charger
-     */
+   
     loadFromHistory(value) {
         this.currentOperand = value;
         this.updateDisplay();
         toggleMenu();  // Ferme le menu après sélection
     }
 
-    /**
-     * Formate un nombre pour l'affichage
-     * @param {string} number - Le nombre à formater
-     * @returns {string} Le nombre formaté
-     */
+    
     getDisplayNumber(number) {
         const stringNumber = number.toString();
         const integerDigits = parseFloat(stringNumber.split('.')[0]);
@@ -772,3 +762,4 @@ window.addEventListener('load', () => {
     }
 
 });
+
